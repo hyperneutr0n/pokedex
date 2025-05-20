@@ -25,6 +25,9 @@ func main() {
 			continue
 		}
 
-		fmt.Printf("Your command was: %v\n", words[0])
+		err := routing(words[0])
+		if err != nil {
+			fmt.Println(err)
+		}
 	}
 }
