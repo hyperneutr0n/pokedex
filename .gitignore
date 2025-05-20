@@ -1,2 +1,2 @@
-pokedex
-*.log
+/bin/
+/log/

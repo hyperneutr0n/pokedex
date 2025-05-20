@@ -1,12 +1,15 @@
-package main
+package repl
 
 import (
 	"bufio"
 	"fmt"
 	"os"
+	"strings"
+
+	"github.com/hyperneutr0n/pokedex/internal/commands"
 )
 
-func main() {
+func Start() {
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -25,9 +28,14 @@ func main() {
 			continue
 		}
 
-		err := routing(words[0])
+		err := commands.Execute(words[0])
 		if err != nil {
 			fmt.Println(err)
 		}
 	}
+}
+
+func cleanInput(text string) []string {
+	result := strings.Fields(strings.ToLower(text))
+	return result
 }

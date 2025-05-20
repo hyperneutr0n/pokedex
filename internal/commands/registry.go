@@ -1,8 +1,8 @@
-package main
+package commands
 
 import "fmt"
 
-func getRegistry() map[string]command {
+func GetRegistry() map[string]command {
 	return map[string]command{
 		"exit": {
 			name:					"exit",
@@ -17,8 +17,8 @@ func getRegistry() map[string]command {
 	}
 }
 
-func routing(commandString string) error {
-	registry := getRegistry()
+func Execute(commandString string) error {
+	registry := GetRegistry()
 
 	commandToExecute, exist := registry[commandString]
 	if !exist {
