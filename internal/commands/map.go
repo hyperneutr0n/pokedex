@@ -11,7 +11,7 @@ type LocationArea struct {
 	URL		string 	`json:"url"`
 }
 
-func getMap() error {
+func getMap(cfg *Config) error {
 	url := "https://pokeapi.co/api/v2/location-area/"
 	res, err := http.Get(url)
 	if err != nil {
@@ -30,9 +30,13 @@ func getMap() error {
 	if err := decoder.Decode(&response); err != nil {
 		return fmt.Errorf("Error parsing json. %w", err)
 	}
-
+	
 	for _, area := range response.Result {
 		fmt.Println(area.Name)
 	}
+
+	cfg.Next = response.Next
+	cfg.Previous = response.Previous
+
 	return nil
 }

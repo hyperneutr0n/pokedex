@@ -2,7 +2,7 @@ package commands
 
 import "fmt"
 
-func help() error {
+func help(cfg *Config) error {
 	registry := GetRegistry()
 	fmt.Printf(`
 Welcome to the Pokedex!

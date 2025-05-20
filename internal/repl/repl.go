@@ -10,6 +10,7 @@ import (
 )
 
 func Start() {
+	cfg := &commands.Config{}
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {
@@ -28,7 +29,7 @@ func Start() {
 			continue
 		}
 
-		err := commands.Execute(words[0])
+		err := commands.Execute(words[0], cfg)
 		if err != nil {
 			fmt.Println(err)
 		}
