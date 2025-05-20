@@ -14,6 +14,11 @@ func GetRegistry() map[string]command {
 			description: 	"Display a help message",
 			callback: 		help,
 		},
+		"map":{
+			name:					"map",
+			description: 	"Display names of location areas in Pokemon world",
+			callback: 		getMap,
+		},
 	}
 }
 
