@@ -6,6 +6,7 @@ MAIN_PATH=./cmd/pokedex
 .PHONY: build run clean
 
 build:
+	mkdir -p $(dir $(BINARY_NAME))
 	go build -o $(BINARY_NAME) $(MAIN_PATH)
 
 run:
@@ -13,3 +14,6 @@ run:
 
 clean:
 	rm -f $(BINARY_NAME)
+
+test:
+	go test -v ./internal/...

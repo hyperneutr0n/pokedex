@@ -1,5 +1,7 @@
 package commands
 
+import "github.com/hyperneutr0n/pokedex/internal/pokecache"
+
 type command struct {
 	name					string
 	description 	string
@@ -9,4 +11,5 @@ type command struct {
 type Config struct {
 	Next			string
 	Previous	string
+	Cache			*pokecache.Cache
 }

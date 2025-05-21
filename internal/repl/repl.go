@@ -5,12 +5,17 @@ import (
 	"fmt"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/hyperneutr0n/pokedex/internal/commands"
+	"github.com/hyperneutr0n/pokedex/internal/pokecache"
 )
 
 func Start() {
-	cfg := &commands.Config{}
+	cfg := &commands.Config{
+		Cache: pokecache.NewCache(5 * time.Second),
+	}
+	
 	scanner := bufio.NewScanner(os.Stdin)
 
 	for {

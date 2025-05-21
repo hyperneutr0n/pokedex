@@ -1,28 +1,8 @@
 package repl
 
 import (
-	"fmt"
 	"testing"
 )
-
-func printPass(input string, expected, actual []string) {
-	fmt.Printf(`---------------------------------
-Inputs:     (%v)
-Expecting:  %v
-Actual:     %v
-Pass
-`, input, expected, actual)
-}
-
-func printFail(input string, expected, actual interface{}, reason string, t *testing.T) {
-	t.Errorf(`---------------------------------
-%s
-Inputs:     (%v)
-Expecting:  %v
-Actual:     %v
-Fail
-`, reason, input, expected, actual)
-}
 
 func TestCleanInput(t *testing.T) {
 	cases := []struct {
@@ -30,52 +10,35 @@ func TestCleanInput(t *testing.T) {
 		expected []string
 	}{
 		{
+			input:    "  ",
+			expected: []string{},
+		},
+		{
+			input:    "  hello  ",
+			expected: []string{"hello"},
+		},
+		{
 			input:    "  hello  world  ",
 			expected: []string{"hello", "world"},
 		},
 		{
-			input:    "Go is AWESOME",
-			expected: []string{"go", "is", "awesome"},
-		},
-		{
-			input:    "   ",
-			expected: []string{},
+			input:    "  HellO  World  ",
+			expected: []string{"hello", "world"},
 		},
 	}
-
-	passCount := 0
-	failCount := 0
 
 	for _, c := range cases {
 		actual := cleanInput(c.input)
-
 		if len(actual) != len(c.expected) {
-			failCount++
-			printFail(c.input, len(c.expected), len(actual), "Slice length doesn't match", t)
+			t.Errorf("lengths don't match: '%v' vs '%v'", actual, c.expected)
 			continue
 		}
-
-		fail := false
 		for i := range actual {
 			word := actual[i]
 			expectedWord := c.expected[i]
-
 			if word != expectedWord {
-				fail = true
-				break
+				t.Errorf("cleanInput(%v) == %v, expected %v", c.input, actual, c.expected)
 			}
 		}
-
-		if fail {
-			failCount++
-			printFail(c.input, c.expected, actual, "Word doesn't match", t)
-			continue
-		} else {
-			passCount++
-			printPass(c.input, c.expected, actual)
-		}
 	}
-	fmt.Println("---------------------------------")
-	fmt.Printf("%d passed, %d failed\n", passCount, failCount)
 }
-

@@ -3,6 +3,7 @@ package commands
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 	"net/http"
 )
 
@@ -16,11 +17,6 @@ func getMap(cfg *Config) error {
 	if url == "" {
 		url = "https://pokeapi.co/api/v2/location-area/"
 	}
-	res, err := http.Get(url)
-	if err != nil {
-		return fmt.Errorf("Couldn't reach the API. %w", err)
-	}
-	defer res.Body.Close()
 
 	var response struct {
 		Count    int            `json:"count"`
@@ -29,19 +25,41 @@ func getMap(cfg *Config) error {
 		Result   []LocationArea `json:"results"`
 	}
 
-	decoder := json.NewDecoder(res.Body)
-	if err := decoder.Decode(&response); err != nil {
-		return fmt.Errorf("Error parsing json. %w", err)
+	// Check for cache
+	key := url
+	cached, exist := cfg.Cache.Get(key)
+	if exist {
+		if err := json.Unmarshal(cached, &response); err != nil {
+			return fmt.Errorf("Error unmarshalling JSON from cache. %w", err)
+		}
+
+		return printLocationNames(response.Result, cfg, response.Next, response.Previous)
 	}
 
-	for _, area := range response.Result {
-		fmt.Println(area.Name)
+	// Cache doesn't exist, call the API
+	res, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("Couldn't reach the API. %w", err)
+	}
+	defer res.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Errorf("Error reading response body. %w", err)
+	}
+
+	// Create a cache
+	cfg.Cache.Add(key, body)
+
+	if err := json.Unmarshal(body, &response); err != nil {
+		return fmt.Errorf("Error unmarshalling JSON data. %w", err)
 	}
 
 	cfg.Next = response.Next
 	cfg.Previous = response.Previous
 
-	return nil
+	return printLocationNames(response.Result, cfg, response.Next, response.Previous)
 }
 
 func getMapBack(cfg *Config) error {
@@ -50,11 +68,6 @@ func getMapBack(cfg *Config) error {
 		fmt.Println("You're on the first page")
 		return nil
 	}
-	res, err := http.Get(url)
-	if err != nil {
-		return fmt.Errorf("Couldn't reach the API. %w", err)
-	}
-	defer res.Body.Close()
 
 	var response struct {
 		Count    int            `json:"count"`
@@ -63,17 +76,45 @@ func getMapBack(cfg *Config) error {
 		Result   []LocationArea `json:"results"`
 	}
 
-	decoder := json.NewDecoder(res.Body)
-	if err := decoder.Decode(&response); err != nil {
-		return fmt.Errorf("Error parsing json. %w", err)
+	// Check for cache
+	key := url
+	cached, exist := cfg.Cache.Get(key)
+	if exist {
+		if err := json.Unmarshal(cached, &response); err != nil {
+			return fmt.Errorf("Error unmarshalling JSON from cache. %w", err)
+		}
+
+		return printLocationNames(response.Result, cfg, response.Next, response.Previous)
 	}
 
-	for _, area := range response.Result {
+	// Cache doesn't exist, call the API
+	res, err := http.Get(url)
+	if err != nil {
+		return fmt.Errorf("Couldn't reach the API. %w", err)
+	}
+	defer res.Body.Close()
+
+	// Read the response body
+	body, err := io.ReadAll(res.Body)
+	if err != nil {
+		return fmt.Errorf("Error reading response body. %w", err)
+	}
+
+	// Create a cache
+	cfg.Cache.Add(key, body)
+
+	if err := json.Unmarshal(body, &response); err != nil {
+		return fmt.Errorf("Error unmarshalling JSON data. %w", err)
+	}
+
+	return printLocationNames(response.Result, cfg, response.Next, response.Previous)
+}
+
+func printLocationNames(locationAreas []LocationArea, cfg *Config, next, previous string) error {
+	for _, area := range locationAreas {
 		fmt.Println(area.Name)
 	}
-
-	cfg.Next = response.Next
-	cfg.Previous = response.Previous
-
+	cfg.Next = next
+	cfg.Previous = previous
 	return nil
 }
