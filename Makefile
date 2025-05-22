@@ -2,6 +2,7 @@
 
 BINARY_NAME=bin/pokedex
 MAIN_PATH=./cmd/pokedex
+COMMAND_PATH=internal/commands
 
 .PHONY: build run clean
 
@@ -17,3 +18,8 @@ clean:
 
 test:
 	go test -v ./internal/...
+
+command:
+	touch $(COMMAND_PATH)/$(NAME)
+	echo "package commands" > $(COMMAND_PATH)/$(NAME)
+	code $(COMMAND_PATH)/$(NAME)
