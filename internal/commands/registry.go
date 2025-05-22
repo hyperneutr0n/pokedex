@@ -24,6 +24,11 @@ func GetRegistry() map[string]command {
 			description: 	"Display 20 previous names of location areas in Pokemon world",
 			callback: 		getMapBack,
 		},
+		"explore": {
+			name: 				"explore",
+			description: 	"Explore an area of choice, passed in by the first argument",
+			callback: 		explore,
+		},
 	}
 }
 
