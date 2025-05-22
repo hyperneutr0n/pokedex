@@ -20,6 +20,6 @@ test:
 	go test -v ./internal/...
 
 command:
-	touch $(COMMAND_PATH)/$(NAME)
-	echo "package commands" > $(COMMAND_PATH)/$(NAME)
-	code $(COMMAND_PATH)/$(NAME)
+	touch $(COMMAND_PATH)/$(NAME).go
+	echo "package commands" > $(COMMAND_PATH)/$(NAME).go
+	code $(COMMAND_PATH)/$(NAME).go
