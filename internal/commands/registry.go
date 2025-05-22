@@ -29,6 +29,11 @@ func GetRegistry() map[string]command {
 			description: 	"Explore an area of choice, passed in by the first argument",
 			callback: 		explore,
 		},
+		"catch": {
+			name:					"catch",
+			description: 	"Catch a pokemon, pass the pokemon name in the first argument",
+			callback: 		catch,
+		},
 	}
 }
 
