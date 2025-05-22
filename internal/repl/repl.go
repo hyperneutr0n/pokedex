@@ -28,13 +28,13 @@ func Start() {
 
 		input := scanner.Text()
 
-		words := cleanInput(input)
+		cliArguments := cleanInput(input)
 
-		if len(words) == 0 {
+		if len(cliArguments) == 0 {
 			continue
 		}
 
-		err := commands.Execute(words[0], cfg)
+		err := commands.Execute(cliArguments, cfg)
 		if err != nil {
 			fmt.Println(err)
 		}

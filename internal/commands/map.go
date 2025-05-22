@@ -12,7 +12,7 @@ type LocationArea struct {
 	URL  string `json:"url"`
 }
 
-func getMap(cfg *Config) error {
+func getMap(args []string, cfg *Config) error {
 	url := cfg.Next
 	if url == "" {
 		url = "https://pokeapi.co/api/v2/location-area/"
@@ -62,7 +62,7 @@ func getMap(cfg *Config) error {
 	return printLocationNames(response.Result, cfg, response.Next, response.Previous)
 }
 
-func getMapBack(cfg *Config) error {
+func getMapBack(args []string, cfg *Config) error {
 	url := cfg.Previous
 	if url == "" {
 		fmt.Println("You're on the first page")

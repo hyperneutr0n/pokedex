@@ -27,15 +27,15 @@ func GetRegistry() map[string]command {
 	}
 }
 
-func Execute(commandName string, cfg *Config) error {
+func Execute(cliArguments []string, cfg *Config) error {
 	registry := GetRegistry()
 
-	cmd, exist := registry[commandName]
+	cmd, exist := registry[cliArguments[0]]
 	if !exist {
-		return fmt.Errorf("Unknown command '%v'.", commandName)
+		return fmt.Errorf("Unknown command '%v'.", cliArguments[0])
 	}
 
-	err := cmd.callback(cfg)
+	err := cmd.callback(cliArguments[1:], cfg)
 	if err != nil {
 		return fmt.Errorf("Something went wrong. \n%w", err)
 	}
