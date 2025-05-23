@@ -5,10 +5,19 @@ import (
 	"fmt"
 	"math"
 	"math/rand"
-	"net/http"
+	"net/http"	
 	"time"
 )
 
+type CaughtPokemon struct {
+	Name			string
+	Height		int
+	Weight		int
+	Stats			map[string]int
+	Types			[]string
+}
+
+var UserPokemon = make(map[string]CaughtPokemon)
 var rng = rand.New(rand.NewSource(time.Now().UnixNano()))
 
 func catch(args []string, cfg *Config) error {
@@ -319,6 +328,23 @@ func catch(args []string, cfg *Config) error {
 	success := rng.Float64() < catchRate
 	if success {
 		fmt.Println(args[0] + " was caught!")
+		caught := CaughtPokemon{
+			Name: response.Name,
+			Height: response.Height,
+			Weight: response.Weight,
+			Stats: make(map[string]int),
+			Types: make([]string, 0),
+		}
+
+		for _, data := range response.Stats {
+			caught.Stats[data.Stat.Name] = data.BaseStat
+		}
+
+		for _, data := range response.Types {
+			caught.Types = append(caught.Types, data.Type.Name)
+		}
+
+		UserPokemon[caught.Name] = caught
 	} else {
 		fmt.Println(args[0] + " escaped!")
 	}
