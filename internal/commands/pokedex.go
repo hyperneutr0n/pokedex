@@ -4,7 +4,7 @@ import "fmt"
 
 func pokedex(args []string, cfg *Config) error {
 	fmt.Println("Your Pokedex:")
-	for name, _ := range UserPokemon{
+	for name := range UserPokemon{
 		fmt.Printf("  - %v\n", name)
 	}
 
